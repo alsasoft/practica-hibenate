@@ -29,7 +29,7 @@ public class ChatRoom {
         this.messages = new HashSet<Message>();
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
