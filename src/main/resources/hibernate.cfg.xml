@@ -14,21 +14,21 @@
     <session-factory>
 
         <property name="connection.driver_class">org.mariadb.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mariadb://xxxx/chat2</property>
-        <property name="connection.username">xxxx</property>
-        <property name="connection.password">xxxx</property>
+        <property name="connection.url">jdbc:mariadb://localhost:3306/chat2</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">root</property>
 
         <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
 
         <property name="connection.pool_size">10</property>
         <property name="hibernate.current_session_context_class">thread</property>
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
 
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <mapping class="chat.model.xxxx"/>
-        <mapping class="chat.model.xxxx"/>
-        <mapping class="chat.model.xxxx"/>
+        <mapping class="chat.model.User"/>
+        <mapping class="chat.model.ChatRoom"/>
+        <mapping class="chat.model.Message"/>
 
     </session-factory>
 

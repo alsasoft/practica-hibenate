@@ -9,15 +9,27 @@ import java.util.Set;
  * atendiendo a los comentarios indicados mediante @TODO
  */
 // @TODO completar las anotaciones de la clase
+@Entity
+@Table(name = "users")
 public class User {
 
     // @TODO completar las anotaciones del atributo id (autogenerado)
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
 
     // @TODO completar las anotaciones del atributo username
+    @Column(name = "username", nullable = false, length = 50)
+    private String username;
 
     // @TODO completar las anotaciones del atributo chatRooms
+    @OneToMany(mappedBy = "creator")
+    private Set<ChatRoom> chatRooms;
 
     // @TODO completar las anotaciones del atributo messages
+    @OneToMany(mappedBy = "creator")
+    private Set<Message> messages;
 
     public User () {
 

@@ -5,6 +5,7 @@ import chat.model.Message;
 import chat.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -46,7 +47,11 @@ public class Controller {
      */
     public User createUser(String nickname) throws SQLException {
         // @TODO complete este metodo para crear de forma presistente un usuario
-
+        User nuevoUsuario = new User(nickname);
+        session.beginTransaction();
+        session.saveOrUpdate(nuevoUsuario);
+        session.getTransaction().commit();
+        return nuevoUsuario;
     }
 
     /**
@@ -58,7 +63,11 @@ public class Controller {
      */
     public ChatRoom createChatRoom (User user, String CRname) throws SQLException {
         // @TODO complete este metodo para crear de forma presistente una sala de chat
-
+        ChatRoom nuevaSala = new ChatRoom(CRname,user);
+        session.beginTransaction();
+        session.saveOrUpdate(nuevaSala);
+        session.getTransaction().commit();
+        return nuevaSala;
     }
 
     /**
@@ -70,7 +79,12 @@ public class Controller {
      */
     public void sendMessage (User user, ChatRoom chatRoom, String content) throws SQLException {
         // @TODO complete este metodo para crear de forma presistente un mensaje
-
+        Message nuevoMensaje = new Message(content,chatRoom,user);
+        user.getMessages().add(nuevoMensaje);
+        chatRoom.getMessages().add(nuevoMensaje);
+        session.beginTransaction();
+        session.saveOrUpdate(nuevoMensaje);
+        session.getTransaction().commit();
     }
 
     /**
@@ -80,7 +94,9 @@ public class Controller {
      */
     public List<ChatRoom> getChatRooms () throws SQLException {
         // @TODO complete este metodo para devolver todas las salas de chat
-
+        Query query = session.createQuery("FROM ChatRoom");
+        List<ChatRoom> salas = query.getResultList();
+        return salas;
     }
 
     /**
@@ -95,6 +111,14 @@ public class Controller {
         // @TODO en el chat seleccionado
         // utilice la función "createQuery" dentro de una transacción
         // dentro del "createQuery" realice la consulta hql con "delete from"
- 
+        Transaction transaction = session.beginTransaction();
+        Query query = session.createQuery("DELETE FROM Message WHERE chatRoom = :chatRoom AND creator = :creator");
+        query.setParameter("chatRoom",chatRoom);
+        query.setParameter("creator",user);
+        int mensajesEliminados = query.executeUpdate();
+        transaction.commit();
+        return mensajesEliminados;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package chat.model;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Generated;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,15 +11,29 @@ import java.util.Date;
  * atendiendo a los comentarios indicados mediante @TODO
  */
 // @TODO completar las anotaciones de la clase
+@Entity
+@Table(name = "messages")
 public class Message {
 
     // @TODO completar las anotaciones del atributo id (autogenerado)
+    @Id
+    @Column(name = "id", unique = true)
+    @GeneratedValue
+    private Long id;
 
     // @TODO completar las anotaciones del atributo text
+    @Column(name = "text", nullable = false)
+    private String text;
 
     // @TODO completar las anotaciones del atributo chatRoom
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "chatRoom", nullable = false)
+    private ChatRoom chatRoom;
 
     // @TODO completar las anotaciones del atributo creator
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "createdby", nullable = false)
+    private User creator;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
