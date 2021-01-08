@@ -13,6 +13,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import javax.persistence.Query;
 import java.math.BigInteger;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,10 +49,22 @@ public class Controller {
      */
     public User createUser(String nickname) throws SQLException {
         // @TODO complete este metodo para crear de forma presistente un usuario
+        Query query = session.createQuery("FROM User ");
+        List<User> usuarios = query.getResultList();
         User nuevoUsuario = new User(nickname);
-        session.beginTransaction();
-        session.saveOrUpdate(nuevoUsuario);
-        session.getTransaction().commit();
+        if (!usuarios.isEmpty()){
+            int i = 0; boolean encontrado = false;
+            do{
+                if(usuarios.get(i).getUsername().equals(nickname)){
+                    encontrado = true; nuevoUsuario = usuarios.get(i);
+                }
+                i++;
+            }while (i<usuarios.size() && !encontrado);
+        } else {
+            session.beginTransaction();
+            session.save(nuevoUsuario);
+            session.getTransaction().commit();
+        }
         return nuevoUsuario;
     }
 
@@ -65,7 +79,7 @@ public class Controller {
         // @TODO complete este metodo para crear de forma presistente una sala de chat
         ChatRoom nuevaSala = new ChatRoom(CRname,user);
         session.beginTransaction();
-        session.saveOrUpdate(nuevaSala);
+        session.save(nuevaSala);
         session.getTransaction().commit();
         return nuevaSala;
     }
@@ -83,7 +97,7 @@ public class Controller {
         user.getMessages().add(nuevoMensaje);
         chatRoom.getMessages().add(nuevoMensaje);
         session.beginTransaction();
-        session.saveOrUpdate(nuevoMensaje);
+        session.save(nuevoMensaje);
         session.getTransaction().commit();
     }
 
@@ -111,12 +125,20 @@ public class Controller {
         // @TODO en el chat seleccionado
         // utilice la función "createQuery" dentro de una transacción
         // dentro del "createQuery" realice la consulta hql con "delete from"
-        Transaction transaction = session.beginTransaction();
+        session.beginTransaction();
         Query query = session.createQuery("DELETE FROM Message WHERE chatRoom = :chatRoom AND creator = :creator");
         query.setParameter("chatRoom",chatRoom);
         query.setParameter("creator",user);
         int mensajesEliminados = query.executeUpdate();
-        transaction.commit();
+        List<Message> mensajesSala = new ArrayList<>(chatRoom.getMessages());
+        for (Message m : mensajesSala)
+            if(m.getCreator().equals(user))
+                chatRoom.getMessages().remove(m);
+        List<Message> mensajesUsuario = new ArrayList<>(user.getMessages());
+        for (Message m : mensajesUsuario)
+            if(m.getChatRoom().equals(chatRoom))
+                user.getMessages().remove(m);
+        session.getTransaction().commit();
         return mensajesEliminados;
     }
 

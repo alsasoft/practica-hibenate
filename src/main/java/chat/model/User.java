@@ -16,7 +16,7 @@ public class User {
     // @TODO completar las anotaciones del atributo id (autogenerado)
     @Id
     @GeneratedValue
-    @Column(name = "id")
+    @Column(name = "id", unique = true)
     private Long id;
 
     // @TODO completar las anotaciones del atributo username
@@ -24,11 +24,11 @@ public class User {
     private String username;
 
     // @TODO completar las anotaciones del atributo chatRooms
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<ChatRoom> chatRooms;
 
     // @TODO completar las anotaciones del atributo messages
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private Set<Message> messages;
 
     public User () {
