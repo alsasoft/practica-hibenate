@@ -26,12 +26,12 @@ public class Message {
     private String text;
 
     // @TODO completar las anotaciones del atributo chatRoom
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "chatRoom", nullable = false)
     private ChatRoom chatRoom;
 
     // @TODO completar las anotaciones del atributo creator
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "createdby", nullable = false)
     private User creator;
 

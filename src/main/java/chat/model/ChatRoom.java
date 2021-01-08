@@ -16,7 +16,7 @@ public class ChatRoom {
     // @TODO completar las anotaciones del atributo id (autogenerado)
     @Id
     @GeneratedValue
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "id", unique = true)
     private Long id;
 
     // @TODO completar las anotaciones del atributo name
@@ -24,14 +24,13 @@ public class ChatRoom {
     private String name;
 
     // @TODO completar las anotaciones del atributo creator
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "createdBy", nullable = false)
     private User creator;
 
     // @TODO completar las anotaciones del atributo messages
-    @OneToMany(mappedBy = "chatRoom")
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private Set<Message> messages;
-    private String chatrooms;
 
     public ChatRoom() {
 

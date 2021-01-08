@@ -1,0 +1,27 @@
+version: '3.2'
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: formula1
+    restart: always
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0
+    container_name: phpmyadmin
+    links:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    depends_on:
+      - mariadb
+    ports:
+      - 8080:80
